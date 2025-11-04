@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="card">
+    <h2>Connexion</h2>
+    
+    <form (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input 
+          type="email" 
+          id="email" 
+          [(ngModel)]="email" 
+          name="email"
+          placeholder="votre@email.com"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Mot de passe</label>
+        <input 
+          type="password" 
+          id="password" 
+          [(ngModel)]="password" 
+          name="password"
+          placeholder="••••••••"
+          required
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Se connecter</button>
+    </form>
+
+    <div class="links">
+      <a (click)="goToForgotPassword()">Mot de passe oublié ?</a>
+      <a (click)="goToRegister()">Créer un compte</a>
+    </div>
+  </div>
+</div>

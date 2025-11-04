@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="card">
+    <h1>Bienvenue sur Simple Auth</h1>
+    
+    <div *ngIf="isLoggedIn" class="logged-in-section">
+      <p class="welcome-message">Bonjour <strong>{{ userEmail }}</strong></p>
+      <button class="btn btn-danger" (click)="logout()">Déconnexion</button>
+    </div>
+
+    <div *ngIf="!isLoggedIn" class="logged-out-section">
+      <p>Vous n'êtes pas connecté</p>
+      <div class="button-group">
+        <button class="btn btn-primary" (click)="goToLogin()">Connexion</button>
+        <button class="btn btn-secondary" (click)="goToRegister()">Inscription</button>
+      </div>
+    </div>
+  </div>
+</div>
