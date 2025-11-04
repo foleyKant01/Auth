@@ -12,33 +12,24 @@ class UsersApi(Resource):
         if route == "login":
             return LoginUser()
         
-        if route == "localisation":
-            return SaveLocation()
-        
-        if route == "test":
-            return test()
-        
         if route == "forgot_password":
             return ForgotPassword()
         
         if route == "save_new_password":
             return SaveNewPassword()
+        
+        if route == "update":
+                return UpdateUser()
+            
+        if route == "readsingle":
+            return ReadSingleUser()
+        
     
     def get(self, route):
         if route == "readall":
             return ReadAllUser()
-        if route == "readsingle":
-            return ReadSingleUser()
-
-        # if route == "localisation":
-        #     return Geolocate()
-            
+        
     
     def delete(self, route):
          if route == "delete":
             return DeleteUser()
-         
-    def patch(self, route):
-        if route == "update":
-            return UpdateUser()
-        

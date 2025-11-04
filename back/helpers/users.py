@@ -1,34 +1,13 @@
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from flask import request, jsonify
-from helpers.send_mail import send_mailer_pincode
 from config.db import db
 from model.tt import *
-from helpers.business import ReadAllBusinessByCategories
 import bcrypt
 from flask import request, jsonify
 import bcrypt
 import random
 import string
-
-
-def SaveLocation():
-    if request.is_json:
-        data = request.get_json()
-        latitude = data.get('latitude')
-        longitude = data.get('longitude')
-        categories = data.get('bu_categories')  
-        coordinates = Business.query.filter_by(bu_categories = categories).first()
-        max_radius_meters = data.get('max_radius_meters')   
-
-        if latitude and longitude:
-            print(f"Latitude: {latitude}, Longitude: {longitude}")
-            return jsonify({"status": "Location received", "latitude": latitude, "longitude": longitude})
-        else:
-            return jsonify({"status": "error", "message": "Missing latitude or longitude"}), 400
-    else:
-        return jsonify({"status": "error", "message": "Content-Type must be application/json"}), 400
-
 
    
 def CreateUser():
@@ -265,21 +244,25 @@ def SaveNewPassword():
         temp_password = request.json.get('temp_password')
         new_password = request.json.get('new_password')
         confirm_password = request.json.get('confirm_password')
+        
         if new_password != confirm_password:
             response['status'] = 'error'
             response['message'] = "Les mots de passe ne correspondent pas."
             return response
         single_user = User.query.filter_by(u_email=u_email).first()
+        
         if not single_user:
             response['status'] = 'error'
             response['message'] = "Aucun utilisateur avec cet email."
             return response
+        
         if single_user and bcrypt.checkpw(temp_password.encode('utf-8'), single_user.u_password.encode('utf-8')):
             hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
             single_user.u_password = hashed_password
             db.session.commit()
             response['status'] = 'success'
             response['message'] = 'Mot de passe réinitialisé avec succès.'
+            
         else:
             response['status'] = 'error'
             response['message'] = 'Code temporaire invalide'
