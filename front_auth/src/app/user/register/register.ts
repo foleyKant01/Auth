@@ -15,7 +15,7 @@ declare var bootstrap: any;
   styleUrls: ['./register.css']
 })
 export class RegisterComponent implements OnInit{
-    user_infos:any
+
 
   constructor(private router: Router, private _activateRouter: ActivatedRoute, private auth: AuthService) { }
   

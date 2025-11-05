@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 export interface User {
   email: string;
@@ -32,6 +33,16 @@ export class AuthService {
   SaveNewPassword(body: any) {
     return this.http.post("http://127.0.0.1:5000/api/user/save_new_password", body);
   }
+
+  ReadAllUser(): Observable<any>{
+    return this.http.get<any>("http://127.0.0.1:5000/api/user/readall")
+  }
+
+  DeleteUser(uid: string): Observable<any> {
+    const url = 'http://127.0.0.1:5000/api/user/delete';
+    return this.http.post<any>(url, { uid }, { headers: { 'Content-Type': 'application/json' } });
+  }
+
 }
 
 

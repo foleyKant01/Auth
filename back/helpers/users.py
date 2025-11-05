@@ -50,34 +50,32 @@ def CreateUser():
 
 
 def ReadAllUser():
-
-    reponse = {}
+    response = {}
     try:
-        all_user = User.query.all()
-        if all_user:
-            user_informations = []
+        users = User.query.filter_by(role='user').all()
 
-            for user in all_user:
-                user_infos = {
-                    'username': user.username,
-                    'mobile': user.mobile,
-                    'address': user.address,
-                    'email': user.email,                    
-                    'city': user.city, 
+        if users:
+            user_informations = [
+                {
                     'uid': user.uid,
-                }
-                user_informations.append(user_infos)
-            reponse['status'] = 'success'
-            reponse ['users'] = user_informations
+                    'email': user.email,
+                    'role': user.role,
+                    'creation_date': str(user.creation_date)
+                } 
+                for user in users
+            ]
+            response['status'] = 'success'
+            response['users'] = user_informations
         else:
-            reponse['status'] = 'erreur'
-            reponse['motif'] = 'aucun'
+            response['status'] = 'erreur'
+            response['motif'] = 'aucun utilisateur trouvé'
 
     except Exception as e:
-        reponse['error_description'] = str(e)
-        reponse['status'] = 'error'
+        response['status'] = 'error'
+        response['error_description'] = str(e)
 
-    return reponse
+    return response
+
 
 
 
@@ -88,12 +86,10 @@ def ReadSingleUser():
         uid = request.json.get('uid')
         single_user = User.query.filter_by(uid = uid).first_or_404()
         user_infos = {
-            'username': single_user.username,
-            'mobile': single_user.mobile,
-            'address': single_user.address,
-            'email': single_user.email,                    
-            'city': single_user.city, 
             'uid': single_user.uid,
+            'email': single_user.email,
+            'role': single_user.role,
+            'creation_date': str(single_user.creation_date),                    
         }
         reponse['status'] = 'success'
         reponse['user'] = user_infos
@@ -117,8 +113,6 @@ def UpdateUser  ():
         update_user.mobile = request.json.get('mobile', update_user.mobile)
         update_user.address = request.json.get('address', update_user.address)
         update_user.email = request.json.get('email', update_user.email)
-        update_user.password = request.json.get('city', update_user.password)
-        update_user.city = request.json.get('uid', update_user.city)
 
         db.session.add(update_user)
         db.session.commit()

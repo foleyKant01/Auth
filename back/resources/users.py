@@ -24,12 +24,10 @@ class UsersApi(Resource):
         if route == "readsingle":
             return ReadSingleUser()
         
+        if route == "delete":
+            return DeleteUser()
+        
     
     def get(self, route):
         if route == "readall":
             return ReadAllUser()
-        
-    
-    def delete(self, route):
-         if route == "delete":
-            return DeleteUser()

@@ -1,0 +1,58 @@
+.admin-container {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.admin-container h2 {
+  color: #343a40;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+  text-align: left;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f7ff;
+}
+
+.btn {
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
+
+/* Wrapper pour centrer verticalement et horizontalement */
+.admin-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh; /* prend toute la hauteur de la page */
+  background-color: #f8f9fa;
+  padding: 20px;
+}
+
+.admin-container {
+  width: 90%;
+  max-width: 900px;
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f7ff;
+}
+
+.btn {
+  transition: 0.3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+}
