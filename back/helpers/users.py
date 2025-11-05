@@ -1,11 +1,6 @@
-from flask_jwt_extended import create_access_token
-from datetime import timedelta
-from flask import request, jsonify
 from config.db import db
 from model.tt import *
-import bcrypt
-from flask import request, jsonify
-import bcrypt
+from flask import request
 import random
 import string
 
@@ -78,56 +73,6 @@ def ReadAllUser():
 
 
 
-
-def ReadSingleUser():
-
-    reponse = {}
-    try:
-        uid = request.json.get('uid')
-        single_user = User.query.filter_by(uid = uid).first_or_404()
-        user_infos = {
-            'uid': single_user.uid,
-            'email': single_user.email,
-            'role': single_user.role,
-            'creation_date': str(single_user.creation_date),                    
-        }
-        reponse['status'] = 'success'
-        reponse['user'] = user_infos
-
-    except Exception as e:
-        reponse['error_description'] = str(e)
-        reponse['status'] = 'error'
-
-    return reponse
-
-
-
-def UpdateUser  ():
-
-    reponse = {}
-    try:
-        uid = request.json.get('uid')
-        update_user = User.query.filter_by(uid = uid).first_or_404()
-
-        update_user.username = request.json.get('username', update_user.username)            
-        update_user.mobile = request.json.get('mobile', update_user.mobile)
-        update_user.address = request.json.get('address', update_user.address)
-        update_user.email = request.json.get('email', update_user.email)
-
-        db.session.add(update_user)
-        db.session.commit()
-
-        reponse['status'] = 'Succes'
-        reponse['user'] = update_user
-
-
-    except Exception as e:
-        reponse['error_description'] = str(e)
-        reponse['status'] = 'error'
-
-    return reponse
-
-
 def DeleteUser():
 
     reponse = {}
@@ -177,48 +122,6 @@ def LoginUser():
 
     return reponse
 
-
-
-def generate_temp_password(length=8):
-    digits = string.digits  # '0123456789'
-    return ''.join(random.choice(digits) for _ in range(length))
-
-
-def ForgotPassword():
-    response = {}
-    try:
-        email = request.json.get('email')
-        if not email:
-            response['status'] = 'error'
-            response['message'] = 'Adresse email manquante.'
-            return response
-        single_user = User.query.filter_by(email=email).first()
-        if not single_user:
-            response['status'] = 'error'
-            response['message'] = "Aucun utilisateur trouver avec cet email."
-            return response
-        # temp_password = generate_temp_password()
-        # hashed_password = bcrypt.hashpw(temp_password.encode('utf-8'), bcrypt.gensalt())
-
-        single_user.password = hashed_password
-        db.session.commit()
-
-        try:
-            send_mailer_pincode(single_user.email, temp_password)
-
-            response['status'] = 'success'
-            response['message'] = 'Envoi du code de réinitialisation réussit'
-            response['email'] = email 
-
-        except Exception as e:
-            response['status'] = 'error'
-            response['message'] = str(e)
-
-    except Exception as e:
-        response['status'] = 'error'
-        response['message'] = str(e)
-
-    return response
 
 
 def SaveNewPassword():

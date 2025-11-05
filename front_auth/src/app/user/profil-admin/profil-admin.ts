@@ -54,7 +54,6 @@ Readalluser(): void {
       this.auth.DeleteUser(uid).subscribe({
         next: (response: any) => {
           console.log('User deleted successfully:', response);
-          // Rafraîchir la liste des utilisateurs
           this.Readalluser();
         },
         error: (error) => {

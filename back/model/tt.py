@@ -1,10 +1,6 @@
 import datetime
 import uuid
 from config.db import *
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import expression
-from sqlalchemy.dialects.mysql import MEDIUMTEXT
-from sqlalchemy import Text  # en haut de ton fichier si ce n'est pas déjà fait
 
 
 class User(db.Model):

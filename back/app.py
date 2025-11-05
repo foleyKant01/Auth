@@ -1,12 +1,11 @@
 from flask_jwt_extended import JWTManager, jwt_required, create_access_token, get_jwt_identity
 from flask import Flask, render_template
 import os
-from flask_restful import Resource, Api
+from flask_restful import Api
 from config.db import db
 from config.constant import *
 from model.tt import *
 from resources.users import UsersApi
-# from resources.combi import CombiApi 
 from flask_migrate import Migrate
 from flask_cors import CORS
 
@@ -27,7 +26,7 @@ db.init_app(app)
 migrate = Migrate(app, db)
 api = Api(app)
 
-CORS(app, resources={r"/*": {"origins": "*"}})  # Pour autoriser toutes les origines
+CORS(app, resources={r"/*": {"origins": "*"}}) 
 
 @app.after_request
 def after_request(response):
