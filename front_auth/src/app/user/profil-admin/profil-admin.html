@@ -1,0 +1,22 @@
+<div class="admin-container">
+  <h2>Liste des utilisateurs</h2>
+
+  <div *ngIf="loading">Chargement...</div>
+
+  <table *ngIf="!loading">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let user of users">
+        <td>{{ user.email }}</td>
+        <td>
+          <button (click)="deleteUser(user._id)">Supprimer</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
