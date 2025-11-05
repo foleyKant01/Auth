@@ -1,9 +1,7 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth';
 
 @Component({
@@ -15,46 +13,49 @@ import { AuthService } from '../../services/auth';
 })
 export class ProfilAdminComponent implements OnInit {
 
-  allUsers: string[] = [];
   dataUsers: any[] = [];
-  loading = false;
+  loading = true;
+
+  constructor(
+    private router: Router,
+    private auth: AuthService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.Readalluser()
+    this.Readalluser();
   }
 
-  constructor(private router: Router, private auth: AuthService) { }
+  Readalluser(): void {
+    this.loading = true;
 
+    this.auth.ReadAllUser().subscribe({
+      next: (response: any) => {
+        if (response?.status === 'success' && response.users?.length) {
+          this.dataUsers = response.users;
+        } else {
+          this.dataUsers = [];
+        }
+        this.loading = false;
 
-Readalluser(): void {
-  this.loading = true;
-
-  this.auth.ReadAllUser().subscribe({
-    next: (response: { status: string; users?: any[]; [key: string]: any }) => {
-      this.loading = false;
-
-      if (response?.status === 'success' && response.users?.length) {
-        this.dataUsers = response.users;
-        console.log('Users loaded:', this.dataUsers);
-      } else {
+        // ✅ Force Angular à recalculer après la mise à jour
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Erreur lors de la récupération des utilisateurs:', err);
+        this.loading = false;
         this.dataUsers = [];
-        console.warn('Aucun utilisateur trouvé ou réponse invalide:', response);
+        this.cdr.detectChanges();
       }
-    },
-    error: (err) => {
-      this.loading = false;
-      this.dataUsers = [];
-      console.error('Erreur lors de la récupération des utilisateurs:', err);
-    }
-  });
-}
+    });
+  }
 
   Deleteuser(uid: any): void {
     if (confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ?')) {
       this.auth.DeleteUser(uid).subscribe({
         next: (response: any) => {
           console.log('User deleted successfully:', response);
-          this.Readalluser();
+          this.Readalluser(); // recharge la liste
         },
         error: (error) => {
           console.error('Failed to delete user:', error);
@@ -62,6 +63,4 @@ Readalluser(): void {
       });
     }
   }
-
-
 }
