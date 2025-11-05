@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { ProfilAdminComponent } from '../profil-admin/profil-admin';
 
 @Component({
   selector: 'app-profil',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule,RouterLink,ProfilAdminComponent],
   templateUrl: './profil.html',
   styleUrl: './profil.css',
 })
