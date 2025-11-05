@@ -19,11 +19,7 @@ export class HomeComponent implements OnInit {
   private router = inject(Router);
 
   ngOnInit(): void {
-    this.isLoggedIn = this.authService.isLoggedIn();
-    if (this.isLoggedIn) {
-      const user = this.authService.getCurrentUser();
-      this.userEmail = user?.email || '';
-    }
+
   }
 
   goToLogin(): void {
@@ -35,7 +31,6 @@ export class HomeComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.logout();
     this.router.navigate(['/login']);
   }
 }

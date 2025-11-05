@@ -1,48 +1,46 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './register.html',
   styleUrls: ['./register.css']
 })
 export class RegisterComponent {
-  email = '';
-  password = '';
-  confirmPassword = '';
-  
-  private authService = inject(AuthService);
-  private router = inject(Router);
 
-  onSubmit(): void {
-    if (!this.email || !this.password || !this.confirmPassword) {
+  constructor(private router: Router, private _activateRouter: ActivatedRoute, private auth: AuthService) { }
+
+
+  createuser: FormGroup = new FormGroup(
+  {
+    email: new FormControl(null, Validators.required),
+    password: new FormControl(null, Validators.required),
+    confirmpassword: new FormControl(null, Validators.required),
+  }
+  )
+
+  Createuser(){
+    if (!this.createuser?.valid) {
       alert('Veuillez remplir tous les champs');
       return;
     }
-
-    if (this.password !== this.confirmPassword) {
-      alert('Les mots de passe ne correspondent pas');
-      return;
-    }
-
-    if (this.password.length < 6) {
-      alert('Le mot de passe doit contenir au moins 6 caractères');
-      return;
-    }
-
-    // Le service auth.register() appellera l'API backend
-    if (this.authService.register(this.email, this.password)) {
-      alert('Inscription réussie ! Vous pouvez maintenant vous connecter.');
-      this.router.navigate(['/login']);
-    }
-  }
-
-  goToLogin(): void {
-    this.router.navigate(['/login']);
+    this.auth.CreateUser(this.createuser.value).subscribe({
+      next: (res: any) => {
+        console.log('Réponse du serveur :', res);
+        if (res?.status === 'success') {
+          console.log("Redirection vers la page profil");
+          this.router.navigate(['/user/home']);
+        } 
+        else {
+          console.error('Erreur :', res);
+          console.error('Description :', res);
+        }
+      },
+    })
   }
 }

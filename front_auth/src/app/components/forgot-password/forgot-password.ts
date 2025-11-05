@@ -1,36 +1,47 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../services/auth';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule],
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css']
 })
 export class ForgotPasswordComponent {
-  email = '';
-  messageSent = false;
   
-  private authService = inject(AuthService);
-  private router = inject(Router);
+  constructor(private router: Router, private _activateRouter: ActivatedRoute, private auth: AuthService) { }
 
-  onSubmit(): void {
-    if (!this.email) {
-      alert('Veuillez entrer votre email');
+
+  passwordform: FormGroup = new FormGroup(
+  {
+    email: new FormControl(null, Validators.required),
+    password: new FormControl(null, Validators.required),
+    newpassword: new FormControl(null, Validators.required),
+    confirmpassword: new FormControl(null, Validators.required),
+  }
+  )
+
+  Savenewpassword(){
+    if (!this.passwordform?.valid) {
+      alert('Veuillez remplir tous les champs');
       return;
     }
-
-    // Le service auth.forgotPassword() appellera l'API backend
-    if (this.authService.forgotPassword(this.email)) {
-      this.messageSent = true;
-    }
-  }
-
-  goToLogin(): void {
-    this.router.navigate(['/login']);
+    this.auth.SaveNewPassword(this.passwordform.value).subscribe({
+      next: (res: any) => {
+        console.log('Réponse du serveur :', res);
+        if (res?.status === 'success') {
+          console.log("Redirection vers la page profil");
+          this.router.navigate(['/user/home']);
+        } 
+        else {
+          console.error('Erreur :', res);
+          console.error('Description :', res);
+        }
+      },
+    })
   }
 }

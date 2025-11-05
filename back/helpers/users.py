@@ -14,33 +14,24 @@ def CreateUser():
 
     reponse = {}
     try:
-        u_username = (request.json.get('u_username'))
-        u_mobile = (request.json.get('u_mobile'))    
-        u_city = (request.json.get('u_city'))
-        u_address = (request.json.get('u_address'))
-        u_email = (request.json.get('u_email'))
-        u_password = (request.json.get('u_password'))
-
-        hashed_password = bcrypt.hashpw(u_password.encode('utf-8'), bcrypt.gensalt())
+        email = (request.json.get('email'))
+        password = (request.json.get('password'))
+        confirmpassword = (request.json.get('confirmpassword'))
+        if not str(confirmpassword) == str(password):
+            return "Mot de passe non conforme"
         
         new_user = User()
-        new_user.u_username = u_username
-        new_user.u_mobile = u_mobile
-        new_user.u_address = u_address
-        new_user.u_email = u_email
-        new_user.u_password = hashed_password
-        new_user.u_city = u_city
+        new_user.email = email
+        new_user.password = password
         
         db.session.add(new_user)
         db.session.commit()
 
         rs = {}
-        rs['u_username'] = u_username
-        rs['u_mobile'] = u_mobile
-        rs['u_address'] = u_address
-        rs['u_email'] = u_email
-        rs['u_city'] = u_city
-        rs['u_uid'] = new_user.u_uid
+        rs['uid'] = new_user.uid
+        rs['email'] = email
+        rs['creation_date'] = str(new_user.creation_date)
+
 
         reponse['status'] = 'success'
         reponse['user_infos'] = rs
@@ -63,12 +54,12 @@ def ReadAllUser():
 
             for user in all_user:
                 user_infos = {
-                    'u_username': user.u_username,
-                    'u_mobile': user.u_mobile,
-                    'u_address': user.u_address,
-                    'u_email': user.u_email,                    
-                    'u_city': user.u_city, 
-                    'u_uid': user.u_uid,
+                    'username': user.username,
+                    'mobile': user.mobile,
+                    'address': user.address,
+                    'email': user.email,                    
+                    'city': user.city, 
+                    'uid': user.uid,
                 }
                 user_informations.append(user_infos)
             reponse['status'] = 'success'
@@ -89,15 +80,15 @@ def ReadSingleUser():
 
     reponse = {}
     try:
-        uid = request.json.get('u_uid')
-        single_user = User.query.filter_by(u_uid = uid).first_or_404()
+        uid = request.json.get('uid')
+        single_user = User.query.filter_by(uid = uid).first_or_404()
         user_infos = {
-            'u_username': single_user.u_username,
-            'u_mobile': single_user.u_mobile,
-            'u_address': single_user.u_address,
-            'u_email': single_user.u_email,                    
-            'u_city': single_user.u_city, 
-            'u_uid': single_user.u_uid,
+            'username': single_user.username,
+            'mobile': single_user.mobile,
+            'address': single_user.address,
+            'email': single_user.email,                    
+            'city': single_user.city, 
+            'uid': single_user.uid,
         }
         reponse['status'] = 'success'
         reponse['user'] = user_infos
@@ -114,15 +105,15 @@ def UpdateUser  ():
 
     reponse = {}
     try:
-        uid = request.json.get('u_uid')
-        update_user = User.query.filter_by(u_uid = uid).first_or_404()
+        uid = request.json.get('uid')
+        update_user = User.query.filter_by(uid = uid).first_or_404()
 
-        update_user.u_username = request.json.get('u_username', update_user.u_username)            
-        update_user.u_mobile = request.json.get('u_mobile', update_user.u_mobile)
-        update_user.u_address = request.json.get('u_address', update_user.u_address)
-        update_user.u_email = request.json.get('u_email', update_user.u_email)
-        update_user.u_password = request.json.get('u_city', update_user.u_password)
-        update_user.u_city = request.json.get('u_uid', update_user.u_city)
+        update_user.username = request.json.get('username', update_user.username)            
+        update_user.mobile = request.json.get('mobile', update_user.mobile)
+        update_user.address = request.json.get('address', update_user.address)
+        update_user.email = request.json.get('email', update_user.email)
+        update_user.password = request.json.get('city', update_user.password)
+        update_user.city = request.json.get('uid', update_user.city)
 
         db.session.add(update_user)
         db.session.commit()
@@ -142,8 +133,8 @@ def DeleteUser():
 
     reponse = {}
     try:
-        uid = request.json.get('u_uid')
-        deleteuser = User.query.filter_by(u_uid=uid).first_or_404()
+        uid = request.json.get('uid')
+        deleteuser = User.query.filter_by(uid=uid).first_or_404()
 
         db.session.delete(deleteuser)
         db.session.commit()
@@ -161,27 +152,20 @@ def LoginUser():
     reponse = {}
 
     try:
-        username = request.json.get('username')
+        email = request.json.get('email')
         password = request.json.get('password')
 
-        login_user = User.query.filter_by(u_username=username).first()
+        login_user = User.query.filter_by(email=email).first()
 
-        if login_user and bcrypt.checkpw(password.encode('utf-8'), login_user.u_password.encode('utf-8')):
-            expires = timedelta(hours=1)
-            access_token = create_access_token(identity=username)
-
+        if login_user.password == password:
             rs = {}
-            rs['u_username'] = login_user.u_username
-            rs['u_mobile'] = login_user.u_mobile
-            rs['u_address'] = login_user.u_address
-            rs['u_email'] = login_user.u_email
-            rs['u_city'] = login_user.u_city
-            rs['u_uid'] = login_user.u_uid
+            rs['uid'] = login_user.uid
+            rs['email'] = login_user.email
+            rs['creation_date'] = str(login_user.creation_date)
 
             reponse['status'] = 'success'
             reponse['message'] = 'Login successful'
             reponse['user_infos'] = rs
-            reponse['access_token'] = access_token
 
         else:
             reponse['status'] = 'error'
@@ -203,28 +187,28 @@ def generate_temp_password(length=8):
 def ForgotPassword():
     response = {}
     try:
-        u_email = request.json.get('u_email')
-        if not u_email:
+        email = request.json.get('email')
+        if not email:
             response['status'] = 'error'
             response['message'] = 'Adresse email manquante.'
             return response
-        single_user = User.query.filter_by(u_email=u_email).first()
+        single_user = User.query.filter_by(email=email).first()
         if not single_user:
             response['status'] = 'error'
             response['message'] = "Aucun utilisateur trouver avec cet email."
             return response
-        temp_password = generate_temp_password()
-        hashed_password = bcrypt.hashpw(temp_password.encode('utf-8'), bcrypt.gensalt())
+        # temp_password = generate_temp_password()
+        # hashed_password = bcrypt.hashpw(temp_password.encode('utf-8'), bcrypt.gensalt())
 
-        single_user.u_password = hashed_password
+        single_user.password = hashed_password
         db.session.commit()
 
         try:
-            send_mailer_pincode(single_user.u_email, temp_password)
+            send_mailer_pincode(single_user.email, temp_password)
 
             response['status'] = 'success'
             response['message'] = 'Envoi du code de réinitialisation réussit'
-            response['u_email'] = u_email 
+            response['email'] = email 
 
         except Exception as e:
             response['status'] = 'error'
@@ -240,25 +224,24 @@ def ForgotPassword():
 def SaveNewPassword():
     response = {}
     try:
-        u_email = request.json.get('u_email')
-        temp_password = request.json.get('temp_password')
-        new_password = request.json.get('new_password')
-        confirm_password = request.json.get('confirm_password')
+        email = request.json.get('email')
+        password = request.json.get('password')
+        newpassword = request.json.get('newpassword')
+        confirmpassword = request.json.get('confirmpassword')
         
-        if new_password != confirm_password:
+        if newpassword != confirmpassword:
             response['status'] = 'error'
             response['message'] = "Les mots de passe ne correspondent pas."
             return response
-        single_user = User.query.filter_by(u_email=u_email).first()
+        single_user = User.query.filter_by(email=email).first()
         
         if not single_user:
             response['status'] = 'error'
             response['message'] = "Aucun utilisateur avec cet email."
             return response
         
-        if single_user and bcrypt.checkpw(temp_password.encode('utf-8'), single_user.u_password.encode('utf-8')):
-            hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
-            single_user.u_password = hashed_password
+        if single_user.password == password:
+            single_user.password = newpassword
             db.session.commit()
             response['status'] = 'success'
             response['message'] = 'Mot de passe réinitialisé avec succès.'
