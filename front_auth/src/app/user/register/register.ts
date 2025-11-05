@@ -29,6 +29,7 @@ export class RegisterComponent implements OnInit{
     email: new FormControl(null, Validators.required),
     password: new FormControl(null, Validators.required),
     motpreferer: new FormControl(null, Validators.required),
+    role: new FormControl(null, Validators.required),
     confirmpassword: new FormControl(null, Validators.required),
   }
   )

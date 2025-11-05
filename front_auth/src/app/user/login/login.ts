@@ -40,7 +40,9 @@ export class LoginComponent implements OnInit{
         if (res?.status === 'success') {
           console.log("Redirection vers la page profil");
           sessionStorage.setItem('user_infos', JSON.stringify(res.user_infos));
-          this.router.navigate(['/user/profil']);
+          if (res?.user_infos.role ==='user'){
+            this.router.navigate(['/user/profil']);
+          }
 
         } 
         else {

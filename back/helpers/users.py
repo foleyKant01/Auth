@@ -17,6 +17,7 @@ def CreateUser():
         email = (request.json.get('email'))
         password = (request.json.get('password'))
         motpreferer = (request.json.get('motpreferer'))
+        role = (request.json.get('role'))
         confirmpassword = (request.json.get('confirmpassword'))
         if not str(confirmpassword) == str(password):
             return "Mot de passe non conforme"
@@ -24,6 +25,7 @@ def CreateUser():
         new_user = User()
         new_user.email = email
         new_user.motpreferer = motpreferer
+        new_user.role = role
         new_user.password = password
         
         db.session.add(new_user)
@@ -32,6 +34,7 @@ def CreateUser():
         rs = {}
         rs['uid'] = new_user.uid
         rs['email'] = email
+        rs['role'] = role
         rs['creation_date'] = str(new_user.creation_date)
 
 
@@ -163,6 +166,7 @@ def LoginUser():
             rs = {}
             rs['uid'] = login_user.uid
             rs['email'] = login_user.email
+            rs['role'] = login_user.role
             rs['creation_date'] = str(login_user.creation_date)
 
             reponse['status'] = 'success'
