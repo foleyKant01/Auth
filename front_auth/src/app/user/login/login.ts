@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,7 +10,7 @@ declare var bootstrap: any;
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
@@ -39,14 +39,14 @@ export class LoginComponent implements OnInit{
         console.log('Réponse du serveur :', res);
         if (res?.status === 'success') {
           console.log("Redirection vers la page profil");
-          this.router.navigate(['/user/home']);
-          this.showSuccessToast('Connexion réussie !');
+          sessionStorage.setItem('user_infos', JSON.stringify(res.user_infos));
+          this.router.navigate(['/user/profil']);
 
         } 
         else {
           console.error('Données incorrecte, la réponse :', res);
-          this.showErrorToast("Informations d'utilisateur incorrecte. Veuillez réessayer.");
-
+          alert('Données incorrecte');
+          return;
         }
       },
       error: (err) => {
@@ -55,7 +55,6 @@ export class LoginComponent implements OnInit{
           err?.error?.message ||
           err?.message ||
           'Une erreur est survenue lors de la connexion. Veuillez réessayer.';
-        this.showErrorToast(errorMessage);
       },
 
     });
@@ -67,29 +66,5 @@ export class LoginComponent implements OnInit{
 
   goToForgotPassword(): void {
     this.router.navigate(['/forgot-password']);
-  }
-
-    showSuccessToast(message: string) {
-    const toastBody = document.getElementById('successToastBody');
-    if (toastBody) {
-      toastBody.textContent = message;
-    } else {
-      console.warn('Success toast body element not found.');
-    }
-    const toastElement = document.getElementById('successToast');
-    const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
-    toast.show();
-  }
-
-  showErrorToast(message: string) {
-    const toastBody = document.getElementById('errorToastBody');
-    if (toastBody) {
-      toastBody.textContent = message;
-    } else {
-      console.warn('Error toast body element not found.');
-    }
-    const toastElement = document.getElementById('errorToast');
-    const toast = new bootstrap.Toast(toastElement, { delay: 2000 });
-    toast.show();
   }
 }

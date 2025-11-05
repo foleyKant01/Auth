@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -7,7 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [FormsModule, CommonModule, ReactiveFormsModule],
+  imports: [FormsModule, CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css']
 })
@@ -19,7 +19,7 @@ export class ForgotPasswordComponent {
   passwordform: FormGroup = new FormGroup(
   {
     email: new FormControl(null, Validators.required),
-    password: new FormControl(null, Validators.required),
+    motpreferer: new FormControl(null, Validators.required),
     newpassword: new FormControl(null, Validators.required),
     confirmpassword: new FormControl(null, Validators.required),
   }
@@ -40,6 +40,8 @@ export class ForgotPasswordComponent {
         else {
           console.error('Erreur :', res);
           console.error('Description :', res);
+          alert('Email ou mot préféré incorrecte veuillez réessayer');
+          return;
         }
       },
     })

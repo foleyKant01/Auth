@@ -1,13 +1,13 @@
 
 import { Component, OnInit, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [ CommonModule],
+  imports: [ CommonModule, RouterModule],
   templateUrl: './home.html',
   styleUrls: ['./home.css']
 })

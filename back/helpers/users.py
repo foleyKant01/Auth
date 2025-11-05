@@ -16,12 +16,14 @@ def CreateUser():
     try:
         email = (request.json.get('email'))
         password = (request.json.get('password'))
+        motpreferer = (request.json.get('motpreferer'))
         confirmpassword = (request.json.get('confirmpassword'))
         if not str(confirmpassword) == str(password):
             return "Mot de passe non conforme"
         
         new_user = User()
         new_user.email = email
+        new_user.motpreferer = motpreferer
         new_user.password = password
         
         db.session.add(new_user)
@@ -225,7 +227,7 @@ def SaveNewPassword():
     response = {}
     try:
         email = request.json.get('email')
-        password = request.json.get('password')
+        motpreferer = request.json.get('motpreferer')
         newpassword = request.json.get('newpassword')
         confirmpassword = request.json.get('confirmpassword')
         
@@ -240,11 +242,11 @@ def SaveNewPassword():
             response['message'] = "Aucun utilisateur avec cet email."
             return response
         
-        if single_user.password == password:
+        if single_user.motpreferer == motpreferer:
             single_user.password = newpassword
             db.session.commit()
             response['status'] = 'success'
-            response['message'] = 'Mot de passe réinitialisé avec succès.'
+            response['message'] = 'Mot de passe reinitialise avec succes.'
             
         else:
             response['status'] = 'error'

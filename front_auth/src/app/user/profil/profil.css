@@ -1,0 +1,32 @@
+.centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* occupe toute la hauteur de la fenêtre */
+  flex-direction: column;
+  background-color: #f9f9f9;
+  text-align: center;
+}
+
+.content {
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 25px;
+  font-size: 1rem;
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
