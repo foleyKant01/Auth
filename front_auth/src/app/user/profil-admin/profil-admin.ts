@@ -54,8 +54,8 @@ Readalluser(): void {
       this.auth.DeleteUser(uid).subscribe({
         next: (response: any) => {
           console.log('User deleted successfully:', response);
-          // Retirer l’utilisateur de la liste affichée sans recharger la page
-          this.dataUsers = this.dataUsers.filter(user => user.uid !== uid);
+          // Rafraîchir la liste des utilisateurs
+          this.Readalluser();
         },
         error: (error) => {
           console.error('Failed to delete user:', error);
@@ -63,5 +63,6 @@ Readalluser(): void {
       });
     }
   }
+
 
 }
